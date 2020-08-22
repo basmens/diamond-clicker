@@ -23,9 +23,9 @@ public class EvolutionGame extends PApplet {
   }
 
   public void draw() {
-    noStroke();
-    fill(250, 90, 70);
-    rect(0, 0, 100, 100);
+    SharedPApplet.noStroke();
+    SharedPApplet.fill(250, 90, 70);
+    SharedPApplet.rect(0, 0, 100, 100);
   }
 
   protected Logger getLogger() {
