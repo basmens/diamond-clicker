@@ -28,6 +28,9 @@ import processing.opengl.PShader;
 
 public class SharedPApplet {
   public static PApplet sharedApplet;
+  
+  private SharedPApplet() {
+  }
 
   static public void rect(float a, float b, float c, float d) {
     sharedApplet.rect(a, b, c, d);
