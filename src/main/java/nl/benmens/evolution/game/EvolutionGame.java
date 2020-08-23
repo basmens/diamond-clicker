@@ -1,20 +1,14 @@
 package nl.benmens.evolution.game;
 
-import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import nl.benmens.evolution.entity.EntityInterface;
-import nl.benmens.evolution.entity.Entity;
-import nl.benmens.evolution.entity.EntityController;
-import nl.benmens.evolution.entity.EntityMover;
+import nl.benmens.evolution.factories.ControlerFactory;
 import nl.benmens.processing.SharedPApplet;
 import nl.benmens.processing.mvc.View;
-import nl.benmens.world.World;
-import nl.benmens.world.WorldController;
+import nl.benmens.evolution.world.World;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 public class EvolutionGame extends PApplet {
   static int MILLIS_PER_TICK = 10;
@@ -27,25 +21,17 @@ public class EvolutionGame extends PApplet {
   View rootView;
 
   private World world = new World(80, 60);
-  private WorldController worldController;
-  private ArrayList<EntityInterface> entities = new ArrayList<EntityInterface>();
 
   public void settings() {
     SharedPApplet.sharedApplet = this;
 
+    ControlerFactory controlerFactory = new ControlerFactory();
+
     rootView = new View(null);
-    worldController = new WorldController(null, rootView, world);
+    controlerFactory.createController(null, rootView, world);
 
     size(world.width * 10, world.height * 10, P2D);
 
-    EntityInterface e = new Entity();
-
-    e.setState("pos", new PVector(0, 0));
-    e.setState("world", world);
-    e = new EntityMover(e);
-
-    entities.add(e);
-    new EntityController(worldController, worldController.worldView, e);
 
     logger.debug("settings finished");
   }
@@ -57,9 +43,7 @@ public class EvolutionGame extends PApplet {
   public void draw() {
     if (millis() > nextTick) {
       nextTick += MILLIS_PER_TICK;
-      for (EntityInterface e: entities) {
-        e.tick(MILLIS_PER_TICK);
-      }
+      world.tick(MILLIS_PER_TICK);
     }
 
     clear();

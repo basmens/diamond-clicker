@@ -1,4 +1,4 @@
-package nl.benmens.world.terrain;
+package nl.benmens.evolution.world.terrain;
 
 import nl.benmens.processing.mvc.Model;
 

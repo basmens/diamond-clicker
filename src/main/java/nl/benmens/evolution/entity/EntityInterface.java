@@ -6,5 +6,4 @@ public interface EntityInterface {
   <T> T getState(String stateKey, Class<T> type);
 
   void setState(String stateKey, Object value);
-
 }

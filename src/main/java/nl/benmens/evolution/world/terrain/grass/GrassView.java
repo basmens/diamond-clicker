@@ -1,17 +1,17 @@
-package nl.benmens.world.terrain.water;
+package nl.benmens.evolution.world.terrain.grass;
 
 import nl.benmens.processing.SharedPApplet;
 import nl.benmens.processing.mvc.View;
 
-public class WaterView extends View {
+public class GrassView extends View {
   
-  public WaterView(View parent) {
+  public GrassView(View parent) {
     super(parent);
 
     setBoundsRect(0, 0, 100, 100);
 
     shouldClip = true;
-    backgroundColor = SharedPApplet.color(0, 0, 200);
+    backgroundColor = SharedPApplet.color(0, 200, 0);
     hasBackground = true;
   }
 

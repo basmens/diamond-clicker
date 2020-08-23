@@ -4,7 +4,7 @@ public class EntityDecorator implements EntityInterface {
 
   EntityInterface parent;
 
-  EntityDecorator(EntityInterface parent) {
+  public EntityDecorator(EntityInterface parent) {
     this.parent = parent;
   }
 

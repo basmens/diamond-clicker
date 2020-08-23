@@ -1,4 +1,4 @@
-package nl.benmens.world;
+package nl.benmens.evolution.world;
 
 import nl.benmens.processing.mvc.View;
 

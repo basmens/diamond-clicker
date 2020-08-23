@@ -1,4 +1,4 @@
-package nl.benmens.world.terrain.grass;
+package nl.benmens.evolution.world.terrain.grass;
 
 import nl.benmens.processing.mvc.Controller;
 import nl.benmens.processing.mvc.View;

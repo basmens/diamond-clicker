@@ -1,6 +1,8 @@
-package nl.benmens.evolution.entity;
+package nl.benmens.evolution.entity.gene;
 
-import nl.benmens.world.World;
+import nl.benmens.evolution.entity.EntityDecorator;
+import nl.benmens.evolution.entity.EntityInterface;
+import nl.benmens.evolution.world.World;
 import processing.core.PVector;
 
 public class EntityMover extends EntityDecorator {
