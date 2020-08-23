@@ -1,4 +1,4 @@
-package nl.benmens;
+package nl.benmens.processing;
 
 import java.io.BufferedReader;
 import java.io.File;

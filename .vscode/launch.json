@@ -6,9 +6,9 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - EvolutionGame",
+            "name": "Debug (Launch) - EvolutionGame",
             "request": "launch",
-            "mainClass": "nl.benmens.EvolutionGame",
+            "mainClass": "nl.benmens.evolution.game.EvolutionGame",
             "projectName": "evolution-game",
             "vmArgs": "-Dsun.stdout.encoding=UTF-8 -Dsun.err.encoding=UTF-8"
         },
@@ -17,14 +17,6 @@
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}",
-            "vmArgs": "-Dsun.stdout.encoding=UTF-8 -Dsun.err.encoding=UTF-8"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-App<evolution-game>",
-            "request": "launch",
-            "mainClass": "nl.benmens.App",
-            "projectName": "evolution-game",
             "vmArgs": "-Dsun.stdout.encoding=UTF-8 -Dsun.err.encoding=UTF-8"
         }
     ]
