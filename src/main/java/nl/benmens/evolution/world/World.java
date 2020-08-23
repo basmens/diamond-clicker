@@ -33,13 +33,15 @@ public class World extends Model {
       }  
     }
 
-    EntityInterface entity = new Entity();
+    for (int i = 0 ; i < 100; i++) {
+      EntityInterface entity = new Entity();
 
-    entity.setState("pos", new PVector(0, 0));
-    entity.setState("world", this);
-    entity = new EntityMover(entity);
-
-    entities.add(entity);
+      entity.setState("pos", new PVector(0, 0));
+      entity.setState("world", this);
+      entity = new EntityMover(entity);
+  
+      entities.add(entity);  
+    }
   }
 
   public void tick(int millisPerTick) {
