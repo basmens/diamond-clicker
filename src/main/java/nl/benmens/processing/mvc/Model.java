@@ -1,37 +1,14 @@
 package nl.benmens.processing.mvc;
 
-import java.util.ArrayList;
+import nl.benmens.processing.observer.SubscriptionManager;
 
 public class Model {
 
-  private ArrayList<Object> clients = new ArrayList<Object>();
+  public SubscriptionManager subscriptionManager = new SubscriptionManager();
 
   public Model() {
   }
 
-  // ########################################################################
-  // Subscriber handling
-  // ########################################################################
-  protected <T> ArrayList<T> getClientsImplementing(Class<T> interfaceClass) {
-    ArrayList<T> result = new ArrayList<T>();
-
-    for (Object client : clients) {
-      if (interfaceClass.isInstance(client)) {
-        result.add(interfaceClass.cast(client));
-      }
-    }
-
-    return result;
+  public void onDestroy() {
   }
-
-  public void registerClient(Object client) {
-    if (!clients.contains(client)) {
-      clients.add(client);
-    }
-  }
-
-  public void unregisterClient(Object client) {
-    clients.remove(client);
-  }
-
 }

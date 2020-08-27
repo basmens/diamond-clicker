@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import nl.benmens.processing.observer.Subject;
+import nl.benmens.processing.observer.Subscription;
+import nl.benmens.processing.observer.SubscriptionManager;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
@@ -27,10 +30,12 @@ import processing.opengl.PGL;
 import processing.opengl.PShader;
 
 public class SharedPApplet {
-  public static PApplet sharedApplet;
-  
-  private SharedPApplet() {
-  }
+  private static PApplet sharedApplet;
+
+  public static Subject<KeyEventsHandler> keyEvents;
+  public static Subject<MouseEventsHandler> mouseEvents;
+
+  private SharedPApplet() {}
 
   static public void rect(float a, float b, float c, float d) {
     sharedApplet.rect(a, b, c, d);
@@ -181,8 +186,8 @@ public class SharedPApplet {
     sharedApplet.bezier(x1, y1, x2, y2, x3, y3, x4, y4);
   }
 
-  static public void bezier(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4,
-      float y4, float z4) {
+  static public void bezier(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3,
+      float x4, float y4, float z4) {
     sharedApplet.bezier(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4);
   }
 
@@ -202,7 +207,8 @@ public class SharedPApplet {
     sharedApplet.bezierVertex(x2, y2, x3, y3, x4, y4);
   }
 
-  static public void bezierVertex(float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4) {
+  static public void bezierVertex(float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4,
+      float z4) {
     sharedApplet.bezierVertex(x2, y2, z2, x3, y3, z3, x4, y4, z4);
   }
 
@@ -395,8 +401,8 @@ public class SharedPApplet {
     sharedApplet.curve(x1, y1, x2, y2, x3, y3, x4, y4);
   }
 
-  static public void curve(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4,
-      float y4, float z4) {
+  static public void curve(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3,
+      float x4, float y4, float z4) {
     sharedApplet.curve(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4);
   }
 
@@ -1697,4 +1703,29 @@ public class SharedPApplet {
     sharedApplet.vertex(x, y, z, u, v);
   }
 
+  public static PApplet getSharedApplet() {
+    return sharedApplet;
+  }
+
+  public static void setSharedApplet(PApplet sharedApplet) {
+    SharedPApplet.sharedApplet = sharedApplet;
+    SharedPApplet.keyEvents = new Subject<KeyEventsHandler>(sharedApplet);
+    SharedPApplet.mouseEvents = new Subject<MouseEventsHandler>(sharedApplet);
+  }
+
+  public Subscription<?> subscribe(KeyEventsHandler observer) {
+    return keyEvents.subscribe(observer);
+  }
+
+  public Subscription<?> subscribe(KeyEventsHandler observer, SubscriptionManager manager) {
+    return keyEvents.subscribe(observer, manager);
+  }
+
+  public Subscription<?> subscribe(MouseEventsHandler observer) {
+    return mouseEvents.subscribe(observer);
+  }
+
+  public Subscription<?> subscribe(MouseEventsHandler observer, SubscriptionManager manager) {
+    return mouseEvents.subscribe(observer, manager);
+  }
 }

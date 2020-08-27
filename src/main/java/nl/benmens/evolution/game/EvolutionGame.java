@@ -1,14 +1,12 @@
 package nl.benmens.evolution.game;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import nl.benmens.evolution.factories.ControlerFactory;
 import nl.benmens.processing.SharedPApplet;
 import nl.benmens.processing.mvc.View;
 import nl.benmens.evolution.world.World;
-import processing.core.PApplet;
+import nl.benmens.processing.PApplet;
 
 public class EvolutionGame extends PApplet {
   static int MILLIS_PER_TICK = 10;
@@ -23,7 +21,7 @@ public class EvolutionGame extends PApplet {
   private World world = new World(80, 60);
 
   public void settings() {
-    SharedPApplet.sharedApplet = this;
+    SharedPApplet.setSharedApplet(this);
 
     ControlerFactory controlerFactory = new ControlerFactory();
 
@@ -31,7 +29,6 @@ public class EvolutionGame extends PApplet {
     controlerFactory.createController(null, rootView, world);
 
     size(world.width * 10, world.height * 10, P2D);
-
 
     logger.debug("settings finished");
   }
@@ -56,14 +53,14 @@ public class EvolutionGame extends PApplet {
   }
 
   protected void setLogger(Logger logger) {
-      this.logger = logger;
+    this.logger = logger;
   }
 
   static public void main(String[] passedArgs) {
     if (passedArgs != null) {
-      PApplet.main(EvolutionGame.class, passedArgs);
+      PApplet.main(new Object() { }.getClass().getEnclosingClass(), passedArgs);
     } else {
-      PApplet.main(EvolutionGame.class);
+      PApplet.main(new Object() { }.getClass().getEnclosingClass());
     }
   }
 }

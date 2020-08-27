@@ -3,479 +3,421 @@ package nl.benmens.processing.mvc;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import nl.benmens.processing.SharedPApplet;
 import processing.core.PVector;
 
+import nl.benmens.processing.MouseEventsHandler;
+import nl.benmens.processing.SharedPApplet;
+import nl.benmens.processing.observer.Subject;
+import nl.benmens.processing.observer.SubscriptionManager;
+
 public class View {
-    private View parentView = null;
-    protected ArrayList<View> childViews = new ArrayList<View>();
+  private View parentView = null;
+  protected ArrayList<View> childViews = new ArrayList<View>();
 
-    private Rectangle2D.Float frameRect;  // View dimension in Parent coordinates
-    private Rectangle2D.Float boundsRect; // View dimension 
+  private Rectangle2D.Float frameRect; // View dimension in Parent coordinates
+  private Rectangle2D.Float boundsRect; // View dimension
 
-    public boolean shouldClip = false;
-    public boolean isVisible = true;
+  public boolean shouldClip = false;
+  public boolean isVisible = true;
 
-    public boolean hasBackground = false;
-    public int backgroundColor = SharedPApplet.color(255);
+  public boolean hasBackground = false;
+  public int backgroundColor = SharedPApplet.color(255);
 
-    private ArrayList<Object> clients = new ArrayList<Object>();
+  public SubscriptionManager subscriptionManager = new SubscriptionManager();
+  public Subject<MouseEventsHandler> mouseEvents = new Subject<MouseEventsHandler>(this);
 
-
-    public View(View parentView) {
-        if (parentView == null) {
-            this.frameRect = new Rectangle2D.Float(0, 0, SharedPApplet.sharedApplet.width, SharedPApplet.sharedApplet.height);
-            this.boundsRect = new Rectangle2D.Float(0, 0, SharedPApplet.sharedApplet.width, SharedPApplet.sharedApplet.height);
-        } else {
-            this.frameRect = new Rectangle2D.Float(0, 0, parentView.boundsRect.width, parentView.boundsRect.height);
-            this.boundsRect = new Rectangle2D.Float(0, 0, parentView.boundsRect.width, parentView.boundsRect.height);
-            setParentView(parentView);
-        }
+  public View(View parentView) {
+    if (parentView == null) {
+      this.frameRect = new Rectangle2D.Float(0, 0, SharedPApplet.getSharedApplet().width,
+          SharedPApplet.getSharedApplet().height);
+      this.boundsRect = new Rectangle2D.Float(0, 0, SharedPApplet.getSharedApplet().width,
+          SharedPApplet.getSharedApplet().height);
+    } else {
+      this.frameRect = new Rectangle2D.Float(0, 0, parentView.boundsRect.width, parentView.boundsRect.height);
+      this.boundsRect = new Rectangle2D.Float(0, 0, parentView.boundsRect.width, parentView.boundsRect.height);
     }
 
-
-    final public View getParentView() {
-        return parentView;
+    setParentView(parentView);
+    if (parentView == null) {
+      registerEventHandlers();
     }
+  }
 
+  final public View getParentView() {
+    return parentView;
+  }
 
-    final public void setParentView(View newParentView) {
-        if (parentView != newParentView) {
-            
-            if (parentView != null) {
-                parentView.childViews.remove(this);
-            }
-
-            parentView = newParentView;
-
-            if (parentView != null) {
-
-                if (!parentView.childViews.contains(this)) {
-                    parentView.childViews.add(this);
-
-                    parentView.onChildViewAdded(this);
-                }
-            }
-        } 
+  private void unregisterEventHandlers() {
+    if (parentView == null) {
+      this.subscriptionManager.unsubscribeAll(SharedPApplet.getSharedApplet());
     }
+  }
 
+  private void registerEventHandlers() {
 
-    final public ArrayList<View> getChildViews() {
-        return childViews;
-    }
+    if (parentView == null) {
+      SharedPApplet.mouseEvents.subscribe(new MouseEventsHandler(){
+        @Override
+        public void mousePressed(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+          View targetView = getViewAtPos(mouseX, mouseY);
 
+          PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
+          PVector pmousePos = screenPosToViewPos(new PVector(pmouseX, pmouseY));
 
-    public void makeChildsVisible() {
-        for (View child : childViews) {
-            child.isVisible = true;
-        }
-    }
-
-    public void makeChildsInvisible() {
-        for (View child : childViews) {
-            child.isVisible = false;
-        }
-    }
-
-
-    public final void draw() {
-        Rectangle2D.Float clipBoundary = getClipBoundary();
-
-        if(clipBoundary == null || (clipBoundary.width > 0 && clipBoundary.height > 0)) {
-            SharedPApplet.push();
-
-            if (clipBoundary != null) {
-              SharedPApplet.clip(clipBoundary.x, clipBoundary.y, clipBoundary.width, clipBoundary.height);
-            } else {
-              SharedPApplet.noClip();
-            }
-
-            SharedPApplet.translate(frameRect.x, frameRect.y);
-            // PVector scale = SharedPApplet.getScale();
-            PVector scale = new PVector(1, 1);
-            SharedPApplet.scale(scale.x, scale.y);
-            SharedPApplet.translate(-boundsRect.x, -boundsRect.y);
-            
-            if (isVisible) {
-                if (hasBackground) {
-                  SharedPApplet.background(backgroundColor);
-
-                }
-                beforeDrawChildren();
-
-                for (View childView: childViews) {
-                    childView.draw();
-                }
-
-                afterDrawChildren();
-            }
-
-            SharedPApplet.pop();
-        }
-    }
-
-    public void beforeDrawChildren() {}
-    public void afterDrawChildren() {}
-
-
-    public PVector composedScale() {
-        PVector result = getScale();
-
-        if (this.parentView != null) {
-            PVector parentScale = this.parentView.composedScale();
-            
-            result.x *= parentScale.x;
-            result.y *= parentScale.y;
+          targetView.mousePressed(mousePos.x, mousePos.y, pmousePos.x, pmousePos.y);
         }
 
-        return result;
-    }
+        @Override
+        public void mouseReleased(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+          View targetView = getViewAtPos(mouseX, mouseY);
 
-    public PVector screenSizeToViewSize(PVector size) {
-        PVector result = size.copy();
+          PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
+          PVector pmousePos = screenPosToViewPos(new PVector(pmouseX, pmouseY));
 
-        if (parentView != null) {
-            result = parentView.screenSizeToViewSize(result);
+          targetView.mouseReleased(mousePos.x, mousePos.y, pmousePos.x, pmousePos.y);
         }
 
-        PVector scale = getScale();
+        @Override
+        public void mouseMoved(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+          View targetView = getViewAtPos(mouseX, mouseY);
 
-        result.x /= scale.x;
-        result.y /= scale.y;
+          PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
+          PVector pmousePos = screenPosToViewPos(new PVector(pmouseX, pmouseY));
 
-        return result;
-    }
-
-
-    public PVector getScale() {
-        return new PVector(
-            frameRect.width / boundsRect.width,
-            frameRect.height / boundsRect.height
-        );
-    }
-
-
-    public void setScale(float scale) {
-        boundsRect.width = frameRect.width / scale;
-        boundsRect.height = frameRect.height / scale;
-    }
-
-
-    public void setScale(PVector scale) {
-        boundsRect.width = frameRect.width / scale.x;
-        boundsRect.height = frameRect.height / scale.y;
-    }
-
-
-    public PVector viewSizeToScreenSize(PVector size) {
-        PVector result = size.copy();
-
-        PVector scale = getScale();
-        result.x *= scale.x;
-        result.y *= scale.y;
-
-        if (parentView != null) {
-            result = parentView.viewSizeToScreenSize(result);
+          targetView.mouseMoved(mousePos.x, mousePos.y, pmousePos.x, pmousePos.y);
         }
 
-        return result;
+        @Override
+        public void mouseWheel(float mouseX, float mouseY, int count) {
+          View targetView = getViewAtPos(mouseX, mouseY);
+
+          PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
+
+          targetView.mouseWheel(mousePos.x, mousePos.y, count);
+        }
+      }, subscriptionManager);
     }
+  }
 
+  final public void setParentView(View newParentView) {
+    if (parentView != newParentView) {
 
-    public PVector screenPosToViewPos(PVector pos) {
-        PVector result = pos.copy();
+      unregisterEventHandlers();
 
-        if (parentView != null) {
-            result = parentView.screenPosToViewPos(result);
+      if (parentView != null) {
+        parentView.childViews.remove(this);
+      } else {
+        this.subscriptionManager.unsubscribeAll(SharedPApplet.getSharedApplet());
+      }
+
+      parentView = newParentView;
+
+      if (parentView != null) {
+
+        if (!parentView.childViews.contains(this)) {
+          parentView.childViews.add(this);
+
+          parentView.onChildViewAdded(this);
+        }
+      } 
+
+      registerEventHandlers();
+    }
+  }
+
+  final public ArrayList<View> getChildViews() {
+    return childViews;
+  }
+
+  public void makeChildsVisible() {
+    for (View child : childViews) {
+      child.isVisible = true;
+    }
+  }
+
+  public void makeChildsInvisible() {
+    for (View child : childViews) {
+      child.isVisible = false;
+    }
+  }
+
+  public final void draw() {
+    Rectangle2D.Float clipBoundary = getClipBoundary();
+
+    if (clipBoundary == null || (clipBoundary.width > 0 && clipBoundary.height > 0)) {
+      SharedPApplet.push();
+
+      if (clipBoundary != null) {
+        SharedPApplet.clip(clipBoundary.x, clipBoundary.y, clipBoundary.width, clipBoundary.height);
+      } else {
+        SharedPApplet.noClip();
+      }
+
+      SharedPApplet.translate(frameRect.x, frameRect.y);
+      // PVector scale = SharedPApplet.getScale();
+      PVector scale = new PVector(1, 1);
+      SharedPApplet.scale(scale.x, scale.y);
+      SharedPApplet.translate(-boundsRect.x, -boundsRect.y);
+
+      if (isVisible) {
+        if (hasBackground) {
+          SharedPApplet.background(backgroundColor);
+
+        }
+        beforeDrawChildren();
+
+        for (View childView : childViews) {
+          childView.draw();
         }
 
-        result.sub(frameRect.x, frameRect.y);
-        
-        PVector scale = getScale();
-        result.x /= scale.x;
-        result.y /= scale.y;
+        afterDrawChildren();
+      }
 
-        result.add(boundsRect.x, boundsRect.y);
-
-        return result;
+      SharedPApplet.pop();
     }
-    
+  }
 
+  public void beforeDrawChildren() {
+  }
 
-    public PVector viewPosToScreenPos(PVector pos) {
-        PVector result = pos.copy();
+  public void afterDrawChildren() {
+  }
 
-        result.sub(boundsRect.x, boundsRect.y);
-        
-        PVector scale = getScale();
-        result.x *= scale.x;
-        result.y *= scale.y;
-        
-        result.add(frameRect.x, frameRect.y);
+  public PVector composedScale() {
+    PVector result = getScale();
 
-        if (parentView != null) {
-            result = parentView.viewPosToScreenPos(result);
-        }
+    if (this.parentView != null) {
+      PVector parentScale = this.parentView.composedScale();
 
-        return result;
+      result.x *= parentScale.x;
+      result.y *= parentScale.y;
     }
 
-    
-    public Rectangle2D.Float getClipBoundary() {
-        Rectangle2D.Float viewClip = null;
-        Rectangle2D.Float parentViewClip = null;
+    return result;
+  }
 
-        if (shouldClip) {
-            PVector upperLeft = viewPosToScreenPos(new PVector(boundsRect.x, boundsRect.y));
-            PVector lowerRight = viewPosToScreenPos(new PVector(boundsRect.width, boundsRect.height));
+  public PVector screenSizeToViewSize(PVector size) {
+    PVector result = size.copy();
 
-            viewClip = new Rectangle2D.Float(upperLeft.x, upperLeft.y, lowerRight.x - upperLeft.x, lowerRight.y - upperLeft.y);
-        }
-
-        if (parentView != null) {
-          parentViewClip = parentView.getClipBoundary();
-        }
-
-        if (viewClip != null && parentViewClip != null) {
-            Rectangle2D intersection =  parentViewClip.createIntersection(viewClip);
-            
-            return new Rectangle2D.Float((float)intersection.getX(), (float)intersection.getY(), (float)intersection.getWidth(), (float)intersection.getHeight());
-        } else if (viewClip != null) {
-            return viewClip;
-        } else if (parentViewClip != null) {
-            return parentViewClip;
-        }
-
-        return null;
+    if (parentView != null) {
+      result = parentView.screenSizeToViewSize(result);
     }
 
+    PVector scale = getScale();
 
-    // ########################################################################
-    // Subscriber handling
-    // ########################################################################
-    protected <T> ArrayList<T> getClientsImplementing(Class<T> interfaceClass) {
-        ArrayList<T> result = new ArrayList<T>();
+    result.x /= scale.x;
+    result.y /= scale.y;
 
-        for (Object client: clients) {
-            if (interfaceClass.isInstance(client)) {
-                result.add(interfaceClass.cast(client));
-            }
-        }
+    return result;
+  }
 
-        return result;
+  public PVector getScale() {
+    return new PVector(frameRect.width / boundsRect.width, frameRect.height / boundsRect.height);
+  }
+
+  public void setScale(float scale) {
+    boundsRect.width = frameRect.width / scale;
+    boundsRect.height = frameRect.height / scale;
+  }
+
+  public void setScale(PVector scale) {
+    boundsRect.width = frameRect.width / scale.x;
+    boundsRect.height = frameRect.height / scale.y;
+  }
+
+  public PVector viewSizeToScreenSize(PVector size) {
+    PVector result = size.copy();
+
+    PVector scale = getScale();
+    result.x *= scale.x;
+    result.y *= scale.y;
+
+    if (parentView != null) {
+      result = parentView.viewSizeToScreenSize(result);
     }
 
-    public void registerClient(Object client) {
-        if(!clients.contains(client)) {
-            clients.add(client);
-        }
+    return result;
+  }
+
+  public PVector screenPosToViewPos(PVector pos) {
+    PVector result = pos.copy();
+
+    if (parentView != null) {
+      result = parentView.screenPosToViewPos(result);
     }
 
-    public void unregisterClient(Object client) {
-        clients.remove(client);
+    result.sub(frameRect.x, frameRect.y);
+
+    PVector scale = getScale();
+    result.x /= scale.x;
+    result.y /= scale.y;
+
+    result.add(boundsRect.x, boundsRect.y);
+
+    return result;
+  }
+
+  public PVector viewPosToScreenPos(PVector pos) {
+    PVector result = pos.copy();
+
+    result.sub(boundsRect.x, boundsRect.y);
+
+    PVector scale = getScale();
+    result.x *= scale.x;
+    result.y *= scale.y;
+
+    result.add(frameRect.x, frameRect.y);
+
+    if (parentView != null) {
+      result = parentView.viewPosToScreenPos(result);
     }
 
-    // ########################################################################
-    // Mouse move handling
-    // ########################################################################
+    return result;
+  }
 
-    public final boolean processMouseMoveEvent(float mouseX, float mouseY, float pmouseX, float pmouseY) {
-        Rectangle2D.Float boundary = getClipBoundary();
-        boolean handled = false;
+  public Rectangle2D.Float getClipBoundary() {
+    Rectangle2D.Float viewClip = null;
+    Rectangle2D.Float parentViewClip = null;
 
-        for (View childView: childViews) {
-            handled = childView.processMouseMoveEvent(mouseX, mouseY, pmouseX, pmouseY);
-            if (handled) {
-                break;
-            }
-        }
+    if (shouldClip) {
+      PVector upperLeft = viewPosToScreenPos(new PVector(boundsRect.x, boundsRect.y));
+      PVector lowerRight = viewPosToScreenPos(new PVector(boundsRect.width, boundsRect.height));
 
-        if (!handled && (boundary == null || boundary.contains(mouseX, mouseY))) {
-            PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
-            PVector pmousePos = screenPosToViewPos(new PVector(pmouseX, pmouseY));
-            handled = onMouseMove(mousePos.x, mousePos.y, pmousePos.x, pmousePos.y);
-        }
-        
-        return handled;
+      viewClip = new Rectangle2D.Float(upperLeft.x, upperLeft.y, lowerRight.x - upperLeft.x,
+          lowerRight.y - upperLeft.y);
     }
 
-
-    public boolean onMouseMove(float mouseX, float mouseY, float pmouseX, float pmouseY) {
-        return false;
+    if (parentView != null) {
+      parentViewClip = parentView.getClipBoundary();
     }
 
+    if (viewClip != null && parentViewClip != null) {
+      Rectangle2D intersection = parentViewClip.createIntersection(viewClip);
 
-    // ########################################################################
-    // Mouse drag handling
-    // ########################################################################
-
-    public final boolean processMouseDraggedEvent(float mouseX, float mouseY, float pmouseX, float pmouseY) {
-        Rectangle2D.Float boundary = getClipBoundary();
-        boolean handled = false;
-
-        for (View childView: childViews) {
-            handled = childView.processMouseDraggedEvent(mouseX, mouseY, pmouseX, pmouseY);
-            if (handled) {
-                break;
-            }
-        }
-
-        if (!handled && (boundary == null || boundary.contains(mouseX, mouseY))) {
-            PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
-            PVector pmousePos = screenPosToViewPos(new PVector(pmouseX, pmouseY));
-            handled = onMouseDragged(mousePos.x, mousePos.y, pmousePos.x, pmousePos.y);
-        }
-        
-        return handled;
+      return new Rectangle2D.Float((float) intersection.getX(), (float) intersection.getY(),
+          (float) intersection.getWidth(), (float) intersection.getHeight());
+    } else if (viewClip != null) {
+      return viewClip;
+    } else if (parentViewClip != null) {
+      return parentViewClip;
     }
 
+    return null;
+  }
 
-    public boolean onMouseDragged(float mouseX, float mouseY, float pmouseX, float pmouseY) {
-        return false;
+
+  public View getViewAtPos(float x, float y) {
+    Rectangle2D.Float boundary = getClipBoundary();
+    View result = null;
+
+    for (View childView : childViews) {
+      result = childView.getViewAtPos(x, y);
+      if (result != null) {
+        break;
+      }
     }
 
-
-    // ########################################################################
-    // Mouse scroll handling
-    // ########################################################################
-
-    public final boolean processScrollEvent(float mouseX, float mouseY, float mouseScroll) {
-        Rectangle2D.Float boundary = getClipBoundary();
-        boolean handled = false;
-
-        for (View childView: childViews) {
-            handled = childView.processScrollEvent(mouseX, mouseY, mouseScroll);
-            if (handled) {
-                break;
-            }
-        }
-
-        if (!handled && (boundary == null || boundary.contains(mouseX, mouseY))) {
-            PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
-            handled = onScroll(mousePos.x, mousePos.y, mouseScroll);
-        }
-        
-        return handled;
+    if (result == null && (boundary == null || boundary.contains(x, y))) {
+      result = this;
     }
 
+    return result;
+  }
 
-    public boolean onScroll(float mouseX, float mouseY, float mouseScroll) {
-        return false;
+
+  // ########################################################################
+  // Mouse handling
+  // ########################################################################
+  public void mousePressed(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+    if (parentView != null) {
+      parentView.mousePressed(mouseX, mouseY, pmouseX, pmouseY);
+    }
+  }
+
+  public void mouseReleased(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+    if (parentView != null) {
+      parentView.mouseReleased(mouseX, mouseY, pmouseX, pmouseY);
+    }
+  }
+
+  public void mouseMoved(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+    if (parentView != null) {
+      parentView.mouseMoved(mouseX, mouseY, pmouseX, pmouseY);
+    }
+  }
+
+  public void mouseDragged(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+    if (parentView != null) {
+      parentView.mouseMoved(mouseX, mouseY, pmouseX, pmouseY);
+    }
+  }
+
+  public void mouseWheel(float mouseX, float mouseY, int count) {
+    if (parentView != null) {
+      parentView.mouseWheel(mouseX, mouseY, count);
+    }
+  }
+
+
+  public boolean onScroll(float mouseX, float mouseY, float mouseScroll) {
+    return false;
+  }
+
+
+  // ########################################################################
+  // FrameRect
+  // ########################################################################
+
+  public void setFrameRect(double x, double y, double width, double height) {
+    Rectangle2D.Float oldRect = (Rectangle2D.Float) frameRect.clone();
+
+    frameRect.setRect(x, y, width, height);
+
+    onFrameRectChange(oldRect);
+  }
+
+  public Rectangle2D.Float getFrameRect() {
+    return (Rectangle2D.Float) frameRect.clone();
+  }
+
+  public void onFrameRectChange(Rectangle2D.Float oldRect) {
+  }
+
+  // ########################################################################
+  // BoundsRect
+  // ########################################################################
+
+  public void setBoundsRect(double x, double y, double width, double height) {
+    boundsRect.setRect(x, y, width, height);
+  }
+
+  public Rectangle2D.Float getBoundsRect() {
+    return (Rectangle2D.Float) boundsRect.clone();
+  }
+
+  // ########################################################################
+  // View child events
+  // ########################################################################
+
+  public void onChildViewAdded(View clientView) {
+  }
+
+  // ########################################################################
+  // Destruction
+  // ########################################################################
+
+  public final void destroy() {
+    this.setParentView(null);
+
+    for (Object childViewObject : (ArrayList<?>) childViews.clone()) {
+      View childView = (View) childViewObject;
+      childView.destroy();
     }
 
+    onDestroy();
+  }
 
-    // ########################################################################
-    // Mouse press handling
-    // ########################################################################
-
-    public final boolean processMouseButtonEvent(float mouseX, float mouseY, boolean mousePressed, int mouseButton) {
-        Rectangle2D.Float boundary = getClipBoundary();
-        boolean handled = false;
-
-        for (View childView: childViews) {
-            handled = childView.processMouseButtonEvent(mouseX, mouseY, mousePressed, mouseButton);
-            if (handled) {
-                break;
-            }
-        }
-
-        if (!handled && (boundary == null || boundary.contains(mouseX, mouseY))) {
-            PVector mousePos = screenPosToViewPos(new PVector(mouseX, mouseY));
-            handled = onMouseButtonEvent(mousePos.x, mousePos.y, mousePressed, mouseButton);
-        }
-        
-        return handled;
-    }
-
-
-    public boolean onMouseButtonEvent(float mouseX, float mouseY, boolean mousePressed, int mouseButton) {
-        return false;
-    }
-
-
-    // ########################################################################
-    // Key press handling
-    // ########################################################################
-
-    public final boolean processKeyEvent(boolean pressed, int key) {
-        Rectangle2D.Float boundary = getClipBoundary();
-        boolean handled = false;
-
-        for (View childView: childViews) {
-            handled = childView.processKeyEvent(pressed, key);
-            if (handled) {
-                break;
-            }
-        }
-
-        if (!handled && (boundary == null || boundary.contains(SharedPApplet.sharedApplet.mouseX, SharedPApplet.sharedApplet.mouseY))) {
-            handled = onKeyEvent(pressed, key);
-        }
-        
-        return handled;
-    }
-
-
-    public boolean onKeyEvent(boolean pressed, int key) {
-        return false;
-    }
-
-    // ########################################################################
-    // FrameRect
-    // ########################################################################
-
-    public void setFrameRect(double x, double y, double width, double height) {
-        Rectangle2D.Float oldRect = (Rectangle2D.Float)frameRect.clone();
-
-        frameRect.setRect(x, y, width, height);
-
-        onFrameRectChange(oldRect);
-    }
-
-    public Rectangle2D.Float getFrameRect() {
-        return (Rectangle2D.Float)frameRect.clone();
-    }
-
-    public void onFrameRectChange(Rectangle2D.Float oldRect) {}
-
-
-    // ########################################################################
-    // BoundsRect
-    // ########################################################################
-
-    public void setBoundsRect(double x, double y, double width, double height) {
-        boundsRect.setRect(x, y, width, height);
-    }
-
-    public Rectangle2D.Float getBoundsRect() {
-        return (Rectangle2D.Float)boundsRect.clone();
-    }
-
-
-    // ########################################################################
-    // View child events
-    // ########################################################################
-
-    public void onChildViewAdded(View clientView) {
-    }
-
-
-    // ########################################################################
-    // Destruction
-    // ########################################################################
-    
-    public final void destroy() {
-        this.setParentView(null);
-        
-
-        for (Object childViewObject: (ArrayList<?>)childViews.clone()) {
-            View childView = (View)childViewObject;
-            childView.destroy();
-        }
-
-        onDestroy();
-    }
-
-    public void onDestroy() {}
-
+  public void onDestroy() {
+    this.mouseEvents.unsubscribeAll();
+  }
 }
