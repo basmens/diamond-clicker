@@ -1,9 +1,28 @@
 package nl.benmens.processing;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
 public class PApplet extends processing.core.PApplet {
+
+  protected static final Logger evolutionGameLogger = LogManager.getLogger();
+
+  private Logger logger = evolutionGameLogger;
+
+  public PApplet() {
+    SharedPApplet.setSharedApplet(this);
+  }
+
+  protected Logger getLogger() {
+    return logger;
+  }
+
+  protected void setLogger(Logger logger) {
+    this.logger = logger;
+  }
 
   @Override
   public void keyPressed(KeyEvent event) {
