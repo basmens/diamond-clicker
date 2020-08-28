@@ -148,22 +148,25 @@ public class View {
       SharedPApplet.push();
 
       if (clipBoundary != null) {
-        SharedPApplet.clip(clipBoundary.x, clipBoundary.y, clipBoundary.width, clipBoundary.height);
+        SharedPApplet.clip(
+          Math.round(clipBoundary.x), 
+          Math.round(clipBoundary.y), 
+          Math.round(clipBoundary.width), 
+          Math.round(clipBoundary.height));
       } else {
         SharedPApplet.noClip();
       }
 
       SharedPApplet.translate(frameRect.x, frameRect.y);
-      // PVector scale = SharedPApplet.getScale();
-      PVector scale = new PVector(1, 1);
+      PVector scale = getScale();
       SharedPApplet.scale(scale.x, scale.y);
       SharedPApplet.translate(-boundsRect.x, -boundsRect.y);
 
       if (isVisible) {
         if (hasBackground) {
           SharedPApplet.background(backgroundColor);
-
         }
+
         beforeDrawChildren();
 
         for (View childView : childViews) {
@@ -283,8 +286,11 @@ public class View {
       PVector upperLeft = viewPosToScreenPos(new PVector(boundsRect.x, boundsRect.y));
       PVector lowerRight = viewPosToScreenPos(new PVector(boundsRect.width, boundsRect.height));
 
-      viewClip = new Rectangle2D.Float(upperLeft.x, upperLeft.y, lowerRight.x - upperLeft.x,
-          lowerRight.y - upperLeft.y);
+      viewClip = new Rectangle2D.Float(
+        upperLeft.x, 
+        upperLeft.y, 
+        lowerRight.x - upperLeft.x,
+        lowerRight.y - upperLeft.y);
     }
 
     if (parentView != null) {
@@ -294,8 +300,12 @@ public class View {
     if (viewClip != null && parentViewClip != null) {
       Rectangle2D intersection = parentViewClip.createIntersection(viewClip);
 
-      return new Rectangle2D.Float((float) intersection.getX(), (float) intersection.getY(),
-          (float) intersection.getWidth(), (float) intersection.getHeight());
+      return new Rectangle2D.Float(
+          (float)intersection.getX(), 
+          (float)intersection.getY(),
+          (float)intersection.getWidth(), 
+          (float)intersection.getHeight());
+          
     } else if (viewClip != null) {
       return viewClip;
     } else if (parentViewClip != null) {
@@ -405,7 +415,6 @@ public class View {
   // ########################################################################
   // Destruction
   // ########################################################################
-
   public final void destroy() {
     this.setParentView(null);
 
@@ -414,10 +423,11 @@ public class View {
       childView.destroy();
     }
 
+    this.mouseEvents.unsubscribeAll();
+
     onDestroy();
   }
 
   public void onDestroy() {
-    this.mouseEvents.unsubscribeAll();
   }
 }

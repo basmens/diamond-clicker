@@ -11,6 +11,12 @@ public class WorldView extends View {
   public WorldView(View parent, World world) {
     super(parent);
 
+    this.hasBackground = true;
+    this.backgroundColor = SharedPApplet.color(255);
+    this.setFrameRect(10, 10, world.width * 10 - 20, world.height * 10 - 20);
+    this.setBoundsRect(0, 0, world.width * 10, world.height * 10);
+    this.shouldClip = true;
+
     SharedPApplet.keyEvents.subscribe(new KeyEventsHandler(){
       @Override
       public void keyPressed(KeyEvent event) {
