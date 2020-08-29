@@ -10,7 +10,7 @@ public class EvolutionGame extends PApplet {
 
   private int nextTick = 0;
 
-  private View rootView = new View(null);;
+  private View rootView = new View(null);
 
   private World world = new World(80, 60);
 
