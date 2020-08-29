@@ -1,4 +1,4 @@
-package nl.benmens.evolution.game;
+package nl.benmens.evolution;
 
 import nl.benmens.processing.PApplet;
 import nl.benmens.processing.mvc.View;

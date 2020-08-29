@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Debug (Launch) - EvolutionGame",
             "request": "launch",
-            "mainClass": "nl.benmens.evolution.game.EvolutionGame",
+            "mainClass": "nl.benmens.evolution.EvolutionGame",
             "projectName": "evolution-game",
             "vmArgs": "-Dsun.stdout.encoding=UTF-8 -Dsun.err.encoding=UTF-8"
         },
