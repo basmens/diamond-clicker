@@ -38,9 +38,9 @@ public class EvolutionGame extends PApplet {
 
   static public void main(String[] passedArgs) {
     if (passedArgs != null) {
-      PApplet.main(new Object() { }.getClass().getEnclosingClass(), passedArgs);
+    	PApplet.main(new Object() { }.getClass().getEnclosingClass(), passedArgs);
     } else {
-      PApplet.main(new Object() { }.getClass().getEnclosingClass());
+    	PApplet.main(new Object() { }.getClass().getEnclosingClass());
     }
   }
 }
