@@ -28,5 +28,4 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/jogamp/jogl/jogl-all/2.3.2/jogl-all-2.3.2-natives-windows-i586.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/logging/log4j/log4j-api/2.13.3/log4j-api-2.13.3.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/logging/log4j/log4j-core/2.13.3/log4j-core-2.13.3.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/nl/benmens/processing-bridge/1.0-SNAPSHOT/processing-bridge-1.0-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
