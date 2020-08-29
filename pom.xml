@@ -40,6 +40,13 @@
       <groupId> nl.benmens</groupId>
       <artifactId>processing-bridge</artifactId>
       <version>3.5.4-SNAPSHOT</version>
+      <classifier>jar-with-dependencies</classifier>
+      <exclusions>
+      	<exclusion>
+      		<groupId>org.processing</groupId>
+      		<artifactId>core</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
