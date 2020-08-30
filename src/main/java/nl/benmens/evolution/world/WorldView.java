@@ -32,9 +32,9 @@ public class WorldView extends View {
   }
 
   @Override
-  public void mouseMoved(float mouseX, float mouseY, float pmouseX, float pmouseY) {
+  public boolean mouseMoved(float mouseX, float mouseY, float pmouseX, float pmouseY) {
     System.out.println("move " + String.valueOf(mouseX));
-    super.mouseMoved(mouseX, mouseY, pmouseX, pmouseY);
+    return false;
   }
   
 }
