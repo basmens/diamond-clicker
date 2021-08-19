@@ -1,0 +1,36 @@
+import nl.basmens.diamondclicker.mvc.Model;
+
+import java.util.ArrayList;
+
+public class replaceOne extends Model {
+  ArrayList<replaceOneModelClient> clients = new ArrayList<replaceOneModelClient>();
+
+
+  public replaceOne(Model parentModel) {
+    super(parentModel);
+  }
+  
+
+  // ########################################################################
+  // Registration
+  // ########################################################################
+  public void registerClient(replaceOneModelClient client) {
+    if(!clients.contains(client)) {
+      clients.add(client);
+    }
+  }
+
+  public void unregisterClient(replaceOneModelClient client) {
+      clients.remove(client);
+  }
+
+
+  // ########################################################################
+  // Destruction
+  // ########################################################################
+  public void onDestroy() {
+    for (replaceOneModelClient client : clients) {
+      client.onreplaceOneModelDestroy();
+    }
+  }
+}

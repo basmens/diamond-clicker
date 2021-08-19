@@ -1,0 +1,50 @@
+import nl.basmens.diamondclicker.mvc.View;
+
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+
+public class replaceOneView extends View implements replaceOneModelClient{
+  ArrayList<replaceOneViewClient> clients = new ArrayList<replaceOneViewClient>();
+
+  public replaceOne replaceTwo;
+  
+  
+  public replaceOneView(View parentView, replaceOne replaceTwo, Rectangle2D.Float frameRect, String id) {
+    super(parentView, frameRect, id);
+
+    this.replaceTwo = replaceTwo;
+    replaceTwo.registerClient(this);
+
+    shouldClip = true;
+  }
+
+
+  // ########################################################################
+  // Registration
+  // ########################################################################
+  public void registerClient(replaceOneViewClient client) {
+    if(!clients.contains(client)) {
+      clients.add(client);
+    }
+  }
+
+  public void unregisterClient(replaceOneViewClient client) {
+      clients.remove(client);
+  }
+
+
+  // ########################################################################
+  // Destruction
+  // ########################################################################
+  public void onDestroy() {
+    for (replaceOneViewClient client : clients) {
+      client.onreplaceOneViewDestroy();
+    }
+
+    replaceTwo = null;
+  }
+
+  public void onreplaceOneModelDestroy() {
+    replaceTwo = null;
+  }
+}

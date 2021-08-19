@@ -1,4 +1,4 @@
-package nl.benmens;
+package nl.basmens;
 
 import static org.junit.Assert.assertTrue;
 

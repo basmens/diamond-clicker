@@ -1,0 +1,3 @@
+public interface replaceOneModelClient {
+  public void onreplaceOneModelDestroy();
+}
