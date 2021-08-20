@@ -6,8 +6,8 @@ public class replaceOne extends Model {
   ArrayList<replaceOneModelClient> clients = new ArrayList<replaceOneModelClient>();
 
 
-  public replaceOne(Model parentModel) {
-    super(parentModel);
+  public replaceOne(Model parentModel, String id) {
+    super(parentModel, id);
   }
   
 

@@ -9,7 +9,6 @@ import nl.basmens.diamondclicker.displayDataBlock.DisplayDataBlockController;
 import nl.basmens.diamondclicker.guiModerator.GuiModeratorController;
 import nl.basmens.diamondclicker.mvc.*;
 
-
 public class CanvasController extends Controller implements CanvasModelClient, CanvasViewClient {
   public Canvas canvas;
   public CanvasView canvasView;

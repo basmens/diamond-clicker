@@ -29,6 +29,16 @@ public class ScrollBarView extends View implements ScrollBarModelClient{
     bar = new Rectangle2D.Float(getBoundsRect().width - 60, 25, 20, getBoundsRect().height - 50);
 
     shouldClip = true;
+    isVisible = scrollBar.getVisibleHeight() < scrollBar.getMaxHeight();
+  }
+
+
+  public void onVisibleHeightChange(float visibleHeight) {
+    isVisible = visibleHeight < scrollBar.getMaxHeight();
+  }
+
+  public void onMaxHeightChange(float maxHeight) {
+    isVisible = scrollBar.getVisibleHeight() < maxHeight;
   }
 
 
@@ -62,6 +72,10 @@ public class ScrollBarView extends View implements ScrollBarModelClient{
         barGrabHeight = mousePos.y - bar.y - barPos;
         return true;
       }
+    }
+
+    if(event.getAction() == MouseEvent.WHEEL) {
+      scrollBar.setHeight(scrollBar.getHeight() + event.getCount() * 70);
     }
 
     return false;

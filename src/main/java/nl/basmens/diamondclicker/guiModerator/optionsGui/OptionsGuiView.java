@@ -40,12 +40,12 @@ public class OptionsGuiView extends View implements OptionsGuiModelClient{
     p.strokeWeight(15);
     p.rect(600, 250, 2640, 1660);
 
-    p.fill(200);
+    p.fill(30);
     p.noStroke();
-    p.textFont(FontCache.getFont("ProcessingSansPro-Regular.ttf"));
-    p.textSize(100);
-    p.textAlign(PApplet.CENTER, PApplet.CENTER);
-    p.text("Options", width / 2, height / 2);
+    p.textFont(FontCache.getFont("ProcessingSansPro-Semibold.ttf"));
+    p.textSize(200);
+    p.textAlign(PApplet.LEFT, PApplet.TOP);
+    p.text("Options", 700, 300);
   }
 
   

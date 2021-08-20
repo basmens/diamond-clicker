@@ -30,6 +30,9 @@ public class ScrollBar extends Model {
 
   public void setVisibleHeight(float visibleHeight) {
     this.visibleHeight = visibleHeight;
+    for(ScrollBarModelClient client : clients) {
+      client.onVisibleHeightChange(visibleHeight);
+    }
 
     if(currentHeight > maxHeight - visibleHeight) {
       currentHeight = maxHeight - visibleHeight;
@@ -46,6 +49,9 @@ public class ScrollBar extends Model {
 
   public void setMaxHeight(float maxHeight) {
     this.maxHeight = maxHeight;
+    for(ScrollBarModelClient client : clients) {
+      client.onMaxHeightChange(maxHeight);
+    }
 
     if(currentHeight > maxHeight - visibleHeight) {
       currentHeight = maxHeight - visibleHeight;

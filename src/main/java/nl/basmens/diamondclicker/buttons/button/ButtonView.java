@@ -36,10 +36,12 @@ public abstract class ButtonView extends View {
 
     if(isPressed) {
       if(event.getAction() == MouseEvent.RELEASE) {
+        isPressed = false;
+
         for (ButtonViewClient client : clients) {
           client.onButtonClick(this);
         }
-        isPressed = false;
+
         return true;
       }
     } else {

@@ -8,7 +8,7 @@ public class replaceOneController extends Controller implements replaceOneModelC
 
 
   public replaceOneController(Controller parentController, View parentView, replaceOne replaceTwo, Rectangle2D.Float frameRect, String id) {
-    super(parentController);
+    super(parentController, id);
 
     this.replaceTwo = replaceTwo;
     this.replaceTwo.registerClient(this);

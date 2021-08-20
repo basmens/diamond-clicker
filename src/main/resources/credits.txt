@@ -1,0 +1,25 @@
+Made by Bas Mens
+Socials:
+ - discord: DunlinDolphin#9103
+
+
+Programmed in Java SE using VScode
+ - Java: [https://www.oracle.com/java/technologies/javase-downloads.html]
+ - VScode: [https://code.visualstudio.com]
+
+Libraries used:
+ - Processing: [https://processing.org/]
+ - Processing-bridge: [https://github.com/BenMens/processing-bridge.git]
+
+
+Fonts used:
+ - Processing Sans Pro - Regular: comes with the processing download
+ - Droid Sans Mono: [https://www.1001fonts.com/droid-sans-mono-font.html]
+
+
+Art made by
+Socials:
+
+
+Art form other sources:
+ - Shine effect: [https://github.com/ozh/cookieclicker/blob/gh-pages/img/shine.png]

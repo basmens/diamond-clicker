@@ -11,7 +11,6 @@ import nl.basmens.diamondclicker.scrollBar.ScrollBar;
 import nl.basmens.diamondclicker.scrollBar.ScrollBarController;
 import nl.basmens.diamondclicker.scrollBar.ScrollBarModelClient;
 
-
 public class CreditsGuiController extends Controller implements CreditsGuiModelClient, CreditsGuiViewClient, ButtonViewClient, ScrollBarModelClient {
   public CreditsGui creditsGui;
   public CreditsGuiView creditsGuiView;

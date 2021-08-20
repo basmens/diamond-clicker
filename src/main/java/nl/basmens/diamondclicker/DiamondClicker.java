@@ -16,7 +16,7 @@ public class DiamondClicker extends PApplet {
   CanvasController canvasController2;
   CanvasView canvasView2;
 
-  static public String dataFolderPath = "C:/Users/basme/development/program data/diamond clicker/";
+  static public String dataFolderPath = "C:/Users/basme/development/VScode/diamond-clicker/src/main/resources/";
 
   int lastTickTimestamp = 0;
   int millisPerTick = 25;
