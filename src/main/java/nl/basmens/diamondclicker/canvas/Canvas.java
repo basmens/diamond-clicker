@@ -1,6 +1,7 @@
 package nl.basmens.diamondclicker.canvas;
 
 import nl.basmens.diamondclicker.bigNumber.BigNumber;
+import nl.basmens.diamondclicker.bigNumber.ToStringStrategy;
 import nl.basmens.diamondclicker.mvc.Model;
 import java.util.ArrayList;
 
@@ -9,6 +10,8 @@ public class Canvas extends Model {
 
   private BigNumber diamondsInBank = new BigNumber(1045776);
   private BigNumber diamondsPerSecond = new BigNumber(44326, 86);
+  private BigNumber diamondsCollectedAllTime = new BigNumber(0);
+  private BigNumber diamondsCollectedThisPrestige = new BigNumber(0);
 
   
   public Canvas(Model parentModel, String id) {
@@ -17,22 +20,33 @@ public class Canvas extends Model {
   
 
   // ########################################################################
-  // Getters and setters
+  // Diamonds
   // ########################################################################
   public BigNumber getDiamondsInBank() {
-    return diamondsInBank;
+    return diamondsInBank.copy();
   }
 
   public void setDiamondsInBank(BigNumber diamondsInBank) {
-    this.diamondsInBank = diamondsInBank;
+    BigNumber newDiamonds = BigNumber.max(this.diamondsInBank, diamondsInBank).copy().sub(this.diamondsInBank);
+    diamondsCollectedAllTime.add(newDiamonds);
+    diamondsCollectedThisPrestige.add(newDiamonds);
+
+    this.diamondsInBank = diamondsInBank.copy();
   }
 
   public BigNumber getDiamondsPerSecond() {
-    return diamondsPerSecond;
+    return diamondsPerSecond.copy();
   }
 
   public void setDiamondsPerSecond(BigNumber diamondsPerSecond) {
     this.diamondsPerSecond = diamondsPerSecond;
+  }
+
+  public void setDiamondsToStringStrategy(ToStringStrategy strategy) {
+    diamondsInBank.setToStringStrategy(strategy);
+    diamondsPerSecond.setToStringStrategy(strategy);
+    diamondsCollectedAllTime.setToStringStrategy(strategy);
+    diamondsCollectedThisPrestige.setToStringStrategy(strategy);
   }
 
 

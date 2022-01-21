@@ -37,9 +37,15 @@ public class SwitchButtonView extends View implements SwitchButtonModelClient{
     int stateCount = switchButton.getStateCount();
     int state = switchButton.getState();
 
-    p.fill(60);
+    p.fill(80);
     p.noStroke();
     p.rect(0, 0, width, height);
+
+    if(isHovered != -1) {
+      p.fill(90);
+      p.noStroke();
+      p.rect(width * isHovered / stateCount, 0, width / stateCount, height);
+    }
 
     p.fill(110);
     p.noStroke();
@@ -50,18 +56,12 @@ public class SwitchButtonView extends View implements SwitchButtonModelClient{
     p.strokeWeight(16);
     p.rect(width * state / stateCount + 8, 8, width / stateCount - 16, height - 16);
 
-    if(isHovered != -1 && isHovered != state) {
-      p.fill(90);
-      p.noStroke();
-      p.rect(width * isHovered / stateCount, 0, width / stateCount, height);
-    }
-
     p.fill(30);
     p.stroke(30);
     p.strokeWeight(10);
     p.textFont(FontCache.getFont("ProcessingSansPro-Regular.ttf"));
     p.textAlign(PApplet.CENTER, PApplet.CENTER);
-    p.textSize(Math.min(width * 100 / stateCount / switchButton.getHighestTextWidth(), height));
+    p.textSize(Math.min(width * 100 / stateCount / switchButton.getHighestTextWidth(), height * .9f));
 
     float textY = (height - p.textDescent()) / 2;
     for(int i = 0; i < stateCount; i++) {
@@ -84,13 +84,12 @@ public class SwitchButtonView extends View implements SwitchButtonModelClient{
     PVector mousePos = screenPosToViewPos(new PVector(event.getX(), event.getY()));
     Rectangle2D.Float boundsRect = getBoundsRect();
 
-    if(event.getAction() == MouseEvent.MOVE || event.getAction() == MouseEvent.DRAG) {
-      if(mousePos.x > 0 && mousePos.x < boundsRect.width && mousePos.y > 0 && mousePos.y < boundsRect.height) {
-        isHovered = (int)Math.floor(mousePos.x * switchButton.getStateCount() / boundsRect.width);
-      } else {
-        isHovered = -1;
-        isPressed = false;
-      }
+    if(event.getAction() == MouseEvent.ENTER || event.getAction() == MouseEvent.MOVE || event.getAction() == MouseEvent.DRAG) {
+      isHovered = (int)Math.floor(mousePos.x * switchButton.getStateCount() / boundsRect.width);
+    }
+    if(event.getAction() == MouseEvent.EXIT) {
+      isHovered = -1;
+      isPressed = false;
     }
 
     if(isPressed) {

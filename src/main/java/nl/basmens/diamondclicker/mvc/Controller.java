@@ -59,12 +59,20 @@ public class Controller {
   }
 
   public Controller findControllerByID(String id) {
+    if(parentController == null) {
+      return searchControllerByID(id);
+    } else {
+      return parentController.findControllerByID(id);
+    }
+  }
+
+  private Controller searchControllerByID(String id) {
     if(this.id == id) {
       return this;
     }
 
     for(Controller child : childControllers) {
-      Controller result = child.findControllerByID(id);
+      Controller result = child.searchControllerByID(id);
       if(result != null) {
         return result;
       }

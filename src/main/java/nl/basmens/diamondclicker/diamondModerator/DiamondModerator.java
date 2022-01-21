@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class DiamondModerator extends Model {
   ArrayList<DiamondModeratorModelClient> clients = new ArrayList<DiamondModeratorModelClient>();
 
+  public PImage diamondShine;
   public PImage diamondIcon;
 
   public float minDiamondSize = 180;
@@ -21,7 +22,17 @@ public class DiamondModerator extends Model {
   public DiamondModerator(Model parentModel, String id) {
     super(parentModel, id);
 
+    diamondShine = ImageCache.getImage("shine.png");
     diamondIcon = ImageCache.getImage("diamond" + diamondTier + ".png");
+  }
+
+
+  public void disableShineEffect() {
+    diamondShine = ImageCache.getImage("empty.png");
+  }
+
+  public void enableShineEffect() {
+    diamondShine = ImageCache.getImage("shine.png");
   }
   
 

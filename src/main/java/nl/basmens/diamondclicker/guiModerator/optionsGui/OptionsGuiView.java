@@ -41,7 +41,6 @@ public class OptionsGuiView extends View implements OptionsGuiModelClient{
     p.rect(600, 250, 2640, 1660);
 
     p.fill(30);
-    p.noStroke();
     p.textFont(FontCache.getFont("ProcessingSansPro-Semibold.ttf"));
     p.textSize(200);
     p.textAlign(PApplet.LEFT, PApplet.TOP);

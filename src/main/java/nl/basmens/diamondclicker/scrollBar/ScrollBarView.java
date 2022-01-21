@@ -50,6 +50,11 @@ public class ScrollBarView extends View implements ScrollBarModelClient{
     float barPos = PApplet.map(scrollBar.getHeight(), 0, scrollBar.getMaxHeight(), 0, bar.height);
     float barSize = PApplet.map(scrollBar.getVisibleHeight(), 0, scrollBar.getMaxHeight(), 0, bar.height);
 
+    if(event.getAction() == MouseEvent.EXIT) {
+      isHovered = false;
+      isPressed = false;
+    }
+
     if(event.getAction() == MouseEvent.MOVE || event.getAction() == MouseEvent.DRAG) {
       if(mousePos.x > bar.x && mousePos.x < bar.x + bar.width && mousePos.y > bar.y + barPos && mousePos.y < bar.y + barPos + barSize) {
         isHovered = true;

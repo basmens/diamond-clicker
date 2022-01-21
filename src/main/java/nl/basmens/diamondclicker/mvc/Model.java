@@ -37,14 +37,21 @@ public class Model {
     }
   }
 
-
   public Model findModelByID(String id) {
+    if(parentModel == null) {
+      return searchModelByID(id);
+    } else {
+      return parentModel.findModelByID(id);
+    }
+  }
+
+  private Model searchModelByID(String id) {
     if(this.id == id) {
       return this;
     }
 
     for(Model child : childModels) {
-      Model result = child.findModelByID(id);
+      Model result = child.searchModelByID(id);
       if(result != null) {
         return result;
       }

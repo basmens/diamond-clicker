@@ -21,7 +21,7 @@ public class DisplayDataBlockView extends View {
   public DisplayDataBlockView(View parentView, Rectangle2D.Float frameRect, String id) {
     super(parentView, frameRect, id);
 
-    CanvasView canvasView = (CanvasView)getParentView().findViewByID("canvas 0");
+    CanvasView canvasView = (CanvasView)findViewByID("canvas 0");
     canvas = (Canvas)canvasView.canvas;
 
     shouldClip = true;
@@ -46,16 +46,25 @@ public class DisplayDataBlockView extends View {
     p.textFont(FontCache.getFont("ProcessingSansPro-Regular.ttf"));
     p.textSize(130);
     p.textAlign(PApplet.CENTER, PApplet.CENTER);
-    p.text("Diamond Clicker", width * 0.5f, height / 2 - 20);
+    p.text("Diamond Clicker", width * 0.5f, height / 2 - p.textDescent() / 2);
+
+    String diamondsInBank = canvas.getDiamondsInBank().toString();
+    String diamondsPerSecond = canvas.getDiamondsPerSecond().toString();
 
     p.fill(30, 105, 200);
     p.textFont(FontCache.getFont("DroidSansMono.ttf"));
-    p.textSize(80);
-    p.textAlign(PApplet.LEFT, PApplet.CENTER);
-    p.text(canvas.getDiamondsInBank().toString() + " D", 20, height / 2 - 8);
-    
-    p.textAlign(PApplet.RIGHT, PApplet.CENTER);
-    p.text(canvas.getDiamondsPerSecond().toString() + " Dps", width - 20, height / 2 - 8);
+    p.textSize(75);
+
+    p.textAlign(PApplet.LEFT, PApplet.BOTTOM);
+    p.text(diamondsInBank, 20, height / 2 + p.textDescent());
+    p.textAlign(PApplet.RIGHT, PApplet.BOTTOM);
+    p.text(diamondsPerSecond, width - 20, height / 2 + p.textDescent());
+
+    p.textSize(55);
+    p.textAlign(PApplet.LEFT, PApplet.TOP);
+    p.text("Diamonds", 20, height / 2 - p.textDescent() + 10);
+    p.textAlign(PApplet.RIGHT, PApplet.TOP);
+    p.text("Diamonds / s", width - 20, height / 2 - p.textDescent() + 10);
   }
 
   

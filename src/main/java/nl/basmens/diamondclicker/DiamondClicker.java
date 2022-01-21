@@ -3,6 +3,7 @@ package nl.basmens.diamondclicker;
 import java.awt.geom.Rectangle2D;
 
 import nl.basmens.diamondclicker.canvas.*;
+import nl.basmens.diamondclicker.mvc.View;
 
 import nl.benmens.processing.PApplet;
 import processing.event.KeyEvent;
@@ -41,7 +42,7 @@ public class DiamondClicker extends PApplet {
     registerMethod("mouseEvent", this);
     registerMethod("keyEvent", this);
 
-    getLogger().debug("settings finished");
+    System.out.println("settings finished");
   }
 
   public void setup() {
@@ -55,7 +56,7 @@ public class DiamondClicker extends PApplet {
     //canvasController2 = new CanvasController(null, null, canvas2, new Rectangle2D.Float(width / 2, 0, width / 2, height), "canvas 0");
     //canvasView2 = (CanvasView)canvasController2.getView();
 
-    getLogger().debug("setup finished");
+    System.out.println("setup finished");
   }
 
   public void draw() {
@@ -83,8 +84,13 @@ public class DiamondClicker extends PApplet {
   // Events
   // ########################################################################
   public void mouseEvent(MouseEvent event) {
-		canvasView.processMouseEvent(event);
-		//canvasView2.processMouseEvent(event);
+    if(event.getAction() != MouseEvent.ENTER) {
+		  canvasView.processMouseEvent(event);
+		  //canvasView2.processMouseEvent(event);
+    }
+
+    View.pmouseX = event.getX();
+    View.pmouseY = event.getY();
   }
 
   public void keyEvent(KeyEvent event) {

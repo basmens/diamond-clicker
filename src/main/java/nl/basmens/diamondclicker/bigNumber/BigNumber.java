@@ -1,9 +1,7 @@
 package nl.basmens.diamondclicker.bigNumber;
 
 public class BigNumber {
-  //private ToStringStrategy toStringStrategy = new ScientificNotationStrategy();
-  //private ToStringStrategy toStringStrategy = new AbbreviatedNotationStrategy();
-  private ToStringStrategy toStringStrategy = new SpeechNotationStrategy();
+  private ToStringStrategy toStringStrategy = new ScientificNotationStrategy();
 
   private double base;
   private int exponent;
@@ -21,7 +19,9 @@ public class BigNumber {
 
 
   public BigNumber copy() {
-    return new BigNumber(base, exponent);
+    BigNumber copy = new BigNumber(base, exponent);
+    copy.setToStringStrategy(toStringStrategy);
+    return copy;
   }
 
   public BigNumber valueOf(double n) {
@@ -32,6 +32,10 @@ public class BigNumber {
   }
 
   private void redoExponent() {
+    if(base == 0) {
+      exponent = 0;
+      return;
+    }
     while(base >= 10) {
       base /= 10;
       exponent++;
@@ -89,6 +93,22 @@ public class BigNumber {
     return this;
   }
 
+  public static BigNumber min(BigNumber a, BigNumber b) {
+    if(a.getExponent() * a.getSign() == b.getExponent() * b.getSign()) {
+      return (a.getBase() < b.getBase()) ? a : b;
+    } else {
+      return (a.getExponent() * a.getSign() < b.getExponent() * b.getSign()) ? a : b;
+    }
+  }
+
+  public static BigNumber max(BigNumber a, BigNumber b) {
+    if(a.getExponent() * a.getSign() == b.getExponent() * b.getSign()) {
+      return (a.getBase() > b.getBase()) ? a : b;
+    } else {
+      return (a.getExponent() * a.getSign() > b.getExponent() * b.getSign()) ? a : b;
+    }
+  }
+
 
   // ########################################################################
   // Getters and setters
@@ -130,6 +150,6 @@ public class BigNumber {
   // ToString
   // ########################################################################
   public String toString() {
-    return toStringStrategy.toString(base, exponent);
+    return toStringStrategy.toString(base, exponent, 3);
   }
 }

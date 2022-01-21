@@ -5,7 +5,6 @@ import nl.basmens.diamondclicker.mvc.View;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import processing.core.PVector;
 import processing.event.MouseEvent;
 
 public abstract class ButtonView extends View {
@@ -24,14 +23,12 @@ public abstract class ButtonView extends View {
   // Mouse event
   // ########################################################################
   public boolean onMouseEvent(MouseEvent event) {
-    PVector mousePos = screenPosToViewPos(new PVector(event.getX(), event.getY()));
-    if(event.getAction() == MouseEvent.MOVE || event.getAction() == MouseEvent.DRAG) {
-      if(mousePos.x > 0 && mousePos.x < getBoundsRect().width && mousePos.y > 0 && mousePos.y < getBoundsRect().height) {
-        isHovered = true;
-      } else {
-        isHovered = false;
-        isPressed = false;
-      }
+    if(event.getAction() == MouseEvent.ENTER) {
+      isHovered = true;
+    }
+    if(event.getAction() == MouseEvent.EXIT) {
+      isHovered = false;
+      isPressed = false;
     }
 
     if(isPressed) {

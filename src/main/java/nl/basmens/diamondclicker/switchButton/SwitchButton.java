@@ -61,6 +61,10 @@ public class SwitchButton extends Model {
   }
 
   public void setState(int state) {
+    if(this.state == state) {
+      return;
+    }
+
     this.state = Math.max(Math.min(state, stateCount - 1), 0);
 
     for (SwitchButtonModelClient client : clients) {

@@ -49,16 +49,16 @@ public class GuiModeratorController extends Controller implements CanvasModelCli
     prestigeGuiController = new PrestigeGuiController(this, guiModeratorView, new PrestigeGui(canvas, "prestige gui 0"), guiModeratorView.getBoundsRect(), "prestige gui 0");
 
 
-    optionsButtonView = (ButtonView)parentView.findViewByID("options button 0");
+    optionsButtonView = (ButtonView)guiModeratorView.findViewByID("options button 0");
     optionsButtonView.registerClient(this);
 
-    creditsButtonView = (ButtonView)parentView.findViewByID("credits button 0");
+    creditsButtonView = (ButtonView)guiModeratorView.findViewByID("credits button 0");
     creditsButtonView.registerClient(this);
 
-    statsButtonView = (ButtonView)parentView.findViewByID("stats button 0");
+    statsButtonView = (ButtonView)guiModeratorView.findViewByID("stats button 0");
     statsButtonView.registerClient(this);
 
-    prestigeButtonView = (ButtonView)parentView.findViewByID("prestige button 0");
+    prestigeButtonView = (ButtonView)guiModeratorView.findViewByID("prestige button 0");
     prestigeButtonView.registerClient(this);
   }
 
@@ -136,8 +136,11 @@ public class GuiModeratorController extends Controller implements CanvasModelCli
   public void onDestroy() {
     canvas.unregisterClient(this);
     guiModeratorView.unregisterClient(this);
+    optionsButtonView.unregisterClient(this);
+    creditsButtonView.unregisterClient(this);
+    statsButtonView.unregisterClient(this);
+    prestigeButtonView.unregisterClient(this);
 
-    canvas.destroy();
     guiModeratorView.destroy();
   }
 

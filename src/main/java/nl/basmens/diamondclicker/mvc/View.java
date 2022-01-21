@@ -19,6 +19,9 @@ public class View {
   public boolean shouldClip = false;
   public boolean isVisible = true;
 
+  public static int pmouseX;
+  public static int pmouseY;
+
   public final String id;
 
 
@@ -226,12 +229,20 @@ public class View {
   }
 
   public View findViewByID(String id) {
+    if(parentView == null) {
+      return searchViewByID(id);
+    } else {
+      return parentView.findViewByID(id);
+    }
+  }
+
+  private View searchViewByID(String id) {
     if(this.id == id) {
       return this;
     }
 
     for(View child : childViews) {
-      View result = child.findViewByID(id);
+      View result = child.searchViewByID(id);
       if(result != null) {
         return result;
       }
@@ -346,6 +357,22 @@ public class View {
       return false;
     }
 
+    Rectangle2D.Float clipBoundary = getClipBoundary();
+    if(clipBoundary != null && !clipBoundary.contains(event.getX(), event.getY())) {
+      if(clipBoundary.contains(pmouseX, pmouseY)) {
+        onMouseEvent(new MouseEvent(null, 0, MouseEvent.EXIT, 0, pmouseX, pmouseY, event.getButton(), 1));
+      }
+      
+      for (int i = childViews.size() - 1; i >= 0; i--) {
+        childViews.get(i).processMouseEvent(new MouseEvent(null, 0, MouseEvent.EXIT, 0, pmouseX, pmouseY, event.getButton(), 1));
+      }
+
+      return false;
+    }
+    if(clipBoundary != null && !clipBoundary.contains(pmouseX, pmouseY)) {
+      onMouseEvent(new MouseEvent(null, 0, MouseEvent.ENTER, 0, event.getX(), event.getY(), event.getButton(), 1));
+    }
+
     boolean handled = false;
     
     for (int i = childViews.size() - 1; i >= 0; i--) {
@@ -353,7 +380,7 @@ public class View {
 
       handled = childView.processMouseEvent(event);
       if (handled) {
-          break;
+        break;
       }
     }
 

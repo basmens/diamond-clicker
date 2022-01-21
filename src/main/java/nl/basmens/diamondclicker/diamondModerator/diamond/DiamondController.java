@@ -13,7 +13,6 @@ public class DiamondController extends Controller implements DiamondModeratorMod
   public DiamondView diamondView;
 
   float fallSpeed;
-  boolean toDie = false;
 
 
   public DiamondController(Controller parentController, View parentView, DiamondModerator diamondModerator, Rectangle2D.Float frameRect, String id, PVector pos, float size) {
