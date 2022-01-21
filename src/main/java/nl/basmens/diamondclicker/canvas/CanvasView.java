@@ -66,8 +66,13 @@ public class CanvasView extends View implements CanvasModelClient{
   // ########################################################################
   // Resize window event
   // ########################################################################
-  public void onResizeWindowEvent() {
-    setFrameRect(0, 0, SharedPApplet.sketchWidth(), SharedPApplet.sketchHeight());
+  public void onResizeWindowEvent(Rectangle2D.Float newSize) {
+    originalFrameRect = newSize;
+    setFrameRect(
+      newSize.x + newSize.width / 160, 
+      newSize.y + newSize.width / 160, 
+      newSize.width - newSize.width / 80, 
+      newSize.height - newSize.width / 80);
   }
 
 

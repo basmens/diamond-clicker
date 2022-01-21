@@ -52,9 +52,9 @@ public class DiamondClicker extends PApplet {
     canvasController = new CanvasController(null, null, canvas, new Rectangle2D.Float(0, 0, width, height), "canvas 0");
     canvasView = (CanvasView)canvasController.getView();
 
-    //canvas2 = new Canvas(null, "canvas 0");
-    //canvasController2 = new CanvasController(null, null, canvas2, new Rectangle2D.Float(width / 2, 0, width / 2, height), "canvas 0");
-    //canvasView2 = (CanvasView)canvasController2.getView();
+    canvas2 = new Canvas(null, "canvas 0");
+    canvasController2 = new CanvasController(null, null, canvas2, new Rectangle2D.Float(width / 2, 0, width / 2, height), "canvas 0");
+    canvasView2 = (CanvasView)canvasController2.getView();
 
     System.out.println("setup finished");
   }
@@ -71,12 +71,12 @@ public class DiamondClicker extends PApplet {
 
     while (millis() - lastTickTimestamp >= millisPerTick) {
       canvasController.update(millisPerTick);
-      //canvasController2.update(millisPerTick);
+      canvasController2.update(millisPerTick);
       lastTickTimestamp += millisPerTick;
     }
 
     canvasView.draw();
-    //canvasView2.draw();
+    canvasView2.draw();
   }
 
 
@@ -86,7 +86,7 @@ public class DiamondClicker extends PApplet {
   public void mouseEvent(MouseEvent event) {
     if(event.getAction() != MouseEvent.ENTER) {
 		  canvasView.processMouseEvent(event);
-		  //canvasView2.processMouseEvent(event);
+		  canvasView2.processMouseEvent(event);
     }
 
     View.pmouseX = event.getX();
@@ -95,7 +95,7 @@ public class DiamondClicker extends PApplet {
 
   public void keyEvent(KeyEvent event) {
 		canvasView.processKeyEvent(event);
-		//canvasView2.processKeyEvent(event);
+	  canvasView2.processKeyEvent(event);
 
     if(key == ESC) {
       key = 0;
@@ -103,7 +103,7 @@ public class DiamondClicker extends PApplet {
   }
 
   public void resizeWindowEvent() {
-    canvasView.resizeWindowEvent();
-    //canvasView2.resizeWindowEvent();
+    canvasView.resizeWindowEvent(new Rectangle2D.Float(0, 0, width, height));
+    canvasView2.resizeWindowEvent(new Rectangle2D.Float(width / 2, 0, width / 2, height));
   }
 }

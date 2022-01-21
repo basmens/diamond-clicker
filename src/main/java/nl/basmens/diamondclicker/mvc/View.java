@@ -432,17 +432,17 @@ public class View {
   // ########################################################################
   // Resize window event
   // ########################################################################
-  public final void resizeWindowEvent() {
+  public final void resizeWindowEvent(Rectangle2D.Float newSize) {
     for (int i = childViews.size() - 1; i >= 0; i--) {
       View childView = childViews.get(i);
-      childView.resizeWindowEvent();
+      childView.resizeWindowEvent(newSize);
     }
 
-    onResizeWindowEvent();
+    onResizeWindowEvent(newSize);
   }
 
 
-  public void onResizeWindowEvent() {
+  public void onResizeWindowEvent(Rectangle2D.Float newSize) {
   }
 
 
