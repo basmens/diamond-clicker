@@ -24,7 +24,7 @@ public class CreditsGui extends Model {
 
 
   void getCreditsTextImg() {
-    String[] text = SharedPApplet.loadStrings(DiamondClicker.dataFolderPath + "credits.txt");
+    String[] text = SharedPApplet.loadStrings("credits.txt");
     //String[] text = SharedPApplet.loadStrings(this.getClass().getResource("resources/credits.txt").);
     PGraphics pg = SharedPApplet.createGraphics(2500, text.length * 70);
 

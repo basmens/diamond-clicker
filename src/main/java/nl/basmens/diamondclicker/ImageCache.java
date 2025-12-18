@@ -13,7 +13,7 @@ public class ImageCache {
     PImage resultImage = imageCache.get(name);
 
     if (resultImage == null) {
-      resultImage = SharedPApplet.loadImage(DiamondClicker.dataFolderPath + "images/" + name);
+      resultImage = SharedPApplet.loadImage("images/" + name);
       imageCache.put(name, resultImage);
     }
 

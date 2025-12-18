@@ -13,7 +13,7 @@ public class FontCache {
     PFont resultFont = fontCache.get(name);
 
     if (resultFont == null) {
-      resultFont = SharedPApplet.createFont(DiamondClicker.dataFolderPath + "fonts/" + name, 100);
+      resultFont = SharedPApplet.createFont("fonts/" + name, 100);
       fontCache.put(name, resultFont);
     }
 
